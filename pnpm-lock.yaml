@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   '@emotion/react': ^11.11.1
   '@emotion/styled': ^11.11.0
+  '@mui/icons-material': ^5.14.19
   '@mui/material': ^5.14.19
   '@react-google-maps/api': ^2.19.2
   '@types/google-map-react': ^2.1.10
@@ -27,6 +28,7 @@ specifiers:
 dependencies:
   '@emotion/react': 11.11.1_aubhhyadwwrly2ms2jqnyk2qcu
   '@emotion/styled': 11.11.0_x4qzsp7trrlrlz6xcad7qvinxu
+  '@mui/icons-material': 5.14.19_wobf4d6zcobk32upx2pknsvr2q
   '@mui/material': 5.14.19_3m72q3azgfmtjvmdhnc4acjt2y
   '@react-google-maps/api': 2.19.2_biqbaboplfbrettd7655fr4n2y
   '@types/react-router': 5.1.20
@@ -384,6 +386,23 @@ packages:
 
   /@mui/core-downloads-tracker/5.14.19:
     resolution: {integrity: sha512-y4JseIen5pmZs1n9hHy95HKKioKco8f6N2lford2AmjJigVJOv0KsU0qryiCpyuEUZmi/xCduVilHsK9DSkPcA==}
+    dev: false
+
+  /@mui/icons-material/5.14.19_wobf4d6zcobk32upx2pknsvr2q:
+    resolution: {integrity: sha512-yjP8nluXxZGe3Y7pS+yxBV+hWZSsSBampCxkZwaw+1l+feL+rfP74vbEFbMrX/Kil9I/Y1tWfy5bs/eNvwNpWw==}
+    engines: {node: '>=12.0.0'}
+    peerDependencies:
+      '@mui/material': ^5.0.0
+      '@types/react': ^17.0.0 || ^18.0.0
+      react: ^17.0.0 || ^18.0.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.23.5
+      '@mui/material': 5.14.19_3m72q3azgfmtjvmdhnc4acjt2y
+      '@types/react': 18.2.41
+      react: 18.2.0
     dev: false
 
   /@mui/material/5.14.19_3m72q3azgfmtjvmdhnc4acjt2y:
