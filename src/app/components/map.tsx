@@ -20,7 +20,7 @@ export const MapComponent = ({center: c}: MapProps) => {
     }, [map]);
 
     return <>
-        <APIProvider apiKey={"AIzaSyDolm_ZTZTC3EEW2TuUc9kEGilUG5mgGCA"}>
+        <APIProvider apiKey={"___key___"}>
             <Map
                 zoom={3}
                 center={center}
