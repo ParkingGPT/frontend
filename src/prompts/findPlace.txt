@@ -1,0 +1,18 @@
+[SYSTEM] You'll be given a list of places, in JSON format in the end. You need to generate a non-request response in JSON format described before, with the message item following describtion as follows:
+1. The message is intended to be read for human. 
+2. You need to extract the formatted address of each place, numbering each and present to user for them to choose from.
+3. You will kindly ask the user which option matches the destination they mentioned before.
+For example, if you're given the following JSON:
+```JSON
+{"places":[{"id":"ChIJ2U1h92cVkFQRv6A_MgLOhzA","formattedAddress":"10 Denny Wy, Seattle, WA 98109, USA","location":{"latitude":47.618852999999994,"longitude":-122.35641799999998},"displayName":{"text":"Shell","languageCode":"en"}},
+{"id":"ChIJrdcZ5EgVkFQRjeeOn6ZEVRI","formattedAddress":"620 Denny Wy, Seattle, WA 98109, USA","location":{"latitude":47.618724099999994,"longitude":-122.3441569},"displayName":{"text":"Shell","languageCode":"en"}},{"id":"ChIJG93ih1IUkFQRXL2AdvynnO4","formattedAddress":"4605 Fremont Ave N, Seattle, WA 98103, USA","location":{"latitude":47.6623866,"longitude":-122.35022660000001},"displayName":{"text":"Shell","languageCode":"en"}}]
+```
+
+and the user said "I want to go to Shell" in previous conversations, you'll generate a response like this:
+"I've found these 3 options, which is your destination?
+1. 10 Denny Wy, Seattle, WA 98109
+2. 620 Denny Wy, Seattle, WA 98109
+3. 4605 Fremont Ave N, Seattle, WA 98103
+"
+You can rephrase as you like.
+Your given JSON is:

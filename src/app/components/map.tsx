@@ -20,14 +20,13 @@ export const MapComponent = ({center: c}: MapProps) => {
     }, [map]);
 
     return <>
-        <APIProvider apiKey={"___key___"}>
+        <APIProvider apiKey={"AIzaSyDA49Yft8RgwmtTYuZuARaFAUTCmwrNg7c"}>
             <Map
                 zoom={3}
                 center={center}
                 gestureHandling={'greedy'}
                 disableDefaultUI={true}
             />
-            {/* <MyComponent /> */}
         </APIProvider>
     </>;
 };
