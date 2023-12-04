@@ -15,46 +15,35 @@ const chat_history = new ChatHistoryDao();
 type RequestType = 'findPlace' | 'confirmation' | 'null';
 
 export const initSession = async (uuid: string) => { 
-    const apiUrl = `${Env.BACKEND_URL}${chat_endpoint}`;
     chat_history.addMessage({ role: 'system', content: Env.INIT_PROMPT });
-
-    const data = {
-        "uuid": uuid,
-        "messages": chat_history.getHistory()
-    }
-
-    const result = await axios.post(apiUrl, data);
-    return result.data;
+    const res = await requestChat(uuid);
+    addChatResponse(res);
+    return "assistant: " + res.message;
 }
 
 export const handleChat = async (uuid: string, message: string) => { 
-    const apiUrl = `${Env.BACKEND_URL}${chat_endpoint}`;
     chat_history.addMessage({ role: 'user', content: message });
-    const data = {
-        "uuid": uuid,
-        "messages": chat_history.getHistory(),
-    }
-    const result = await axios.post(apiUrl, data);
-    return parseResponse(result.data);
+    const res = await requestChat(uuid);
+    addChatResponse(res);
+    return parseResponse(res);
 }
 
-export const parseResponse = async (res: string) => { 
-    const parsed = JSON.parse(res) as ChatResponse;
-    if (parsed.request === false)
-        return res;
-    switch (parsed.request_type) { 
+export const parseResponse = async (res: ChatResponse) => { 
+    if (res.request === false)
+        return "assistant: " + res.message;
+    switch (res.request_type) { 
         case 'findPlace':
-            return findPlace(parsed);
+            return findPlace(res);
         case 'confirmation':
-            return confirmation(parsed);
+            return confirmation(res);
         default:
-            return parsed.message;
+            addChatResponse(res);
+            return "assistant: " + res.message;
     }
 
 }
 
 export const confirmation = async (res: ChatResponse) => {
-    console.log("confirmation!!")
     const authUrl = `${Env.BACKEND_URL}${auth_endpoint}`;
     const _ = await axios.get(authUrl, {
         params: {
@@ -78,13 +67,12 @@ export const confirmation = async (res: ChatResponse) => {
         throw new Error(error.message);
     }
 
-    console.log(value);
     const incident_apiUrl = `${Env.BACKEND_URL}${incident_endpoint}`;
     for (let i = 0; i < value.length; i++) {
         const inc_res = await axios.get(incident_apiUrl, {
                 params: {
                     point: point,
-                    radius: 100
+                    radius: 10
                 }
         });
         const { construction, events, congestion, hazards } = inc_res.data;
@@ -111,14 +99,11 @@ export const confirmation = async (res: ChatResponse) => {
         role: 'system',
         content: Env.RECOMMENDATION_PROMPT + JSON.stringify(value)
     }
-    const chat_apiUrl = `${Env.BACKEND_URL}${chat_endpoint}`;
     chat_history.addMessage(message);
-    const data = {
-        "uuid": "1",
-        "messages": chat_history.getHistory()
-    }
-    const chat_result = await axios.post(chat_apiUrl, data);
-    return chat_result.data.message;
+
+    const chat_res = await requestChat("1");
+    addChatResponse(chat_res);
+    return "assistant: " + chat_res.message;
     // const chat_res = chatResponseSchema.validate(chat_result.data);
     // if (chat_res.error) {
     //     throw new Error(chat_res.error.message);
@@ -135,15 +120,9 @@ const findPlace = async (res: ChatResponse) => {
         content: Env.FIND_PLACE_PROMPT + JSON.stringify(result.data)
     }
 
-    const chat_apiUrl = `${Env.BACKEND_URL}${chat_endpoint}`;
     chat_history.addMessage(message);
-    const data = {
-        "uuid": "1",
-        "messages": chat_history.getHistory()
-    }
-
-    const chat_result = await axios.post(chat_apiUrl, data);
-    return chat_result.data.message;
+    const chat_res = await requestChat("1");
+    return "assistant: " + chat_res.message;
     // const chat_res = chatResponseSchema.validate(chat_result.data);
     // if (chat_res.error) {
     //     throw new Error(chat_res.error.message);
@@ -164,4 +143,24 @@ const chatResponseSchema = Joi.object({
     data: Joi.any().optional(),
     message: Joi.string().required()
 });
+
+const requestChat = async (uuid: string) => {
+    const apiUrl = `${Env.BACKEND_URL}${chat_endpoint}`;
+    const data = {
+        "uuid": uuid,
+        "messages": chat_history.getHistory()
+    }
+    const result = await axios.post(apiUrl, data);
+    const parsed = JSON.parse(result.data) as ChatResponse;
+    return parsed
+}
+
+const addChatResponse = (res: ChatResponse) => { 
+    console.log(res);
+    const message = {
+        role: 'assistant',
+        content: res.message
+    };
+    chat_history.addMessage(message);
+}
 

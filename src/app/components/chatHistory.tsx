@@ -5,15 +5,9 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SendIcon from '@mui/icons-material/Send';
 import * as chat from '@/utils/chat.utils';
 
-
-interface ChatMessage {
-    role: string;
-    content: string;
-}
-
 export const ChatHistory = () => {
     const [expanded, setExpanded] = useState(false);
-    const [messages, setMessages] = useState<ChatMessage[]>([]);
+    const [messages, setMessages] = useState<string[]>([]);
 
     const [chatText, setChatText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
@@ -22,26 +16,29 @@ export const ChatHistory = () => {
         setChatText(event.target.value);
     };
 
-    // const messagesToString = () => {
-    //     if(messages.length === 0) return '';
-    //     return messages.map(message => `${message?.role}: ${message?.content}`).join('\n');
-    // };
+    const messagesToString = () => {
+        if(messages.length === 0) return '';
+        return messages.join('\n');
+    };
 
     const handleSendClick = () => {
+        messages.push("user: " + chatText)
+        setMessages(messages);
         if (messages.length === 0) { 
             chat.initSession("1").then((res) => {
-                    setMessages([...messages, res]);
+                    messages.push(res)
+                    setMessages(messages);
                 });
         }
         if (chatText.trim()) {
+            setChatText('');
             setExpanded(true);
             setIsTyping(true);
             chat.handleChat("1", chatText).then((res) => {
-                setMessages([...messages, res]);
-                setChatText('');
+                messages.push(res)
+                setMessages(messages);
                 setIsTyping(false);
             });
-
         }
     };
 
@@ -69,7 +66,8 @@ export const ChatHistory = () => {
                         }
                     </div>
                     <Slide direction="up" in={expanded} mountOnEnter unmountOnExit>
-                        {<textarea className="chat-box h-[50vh] w-[70vw] overflow-y-scroll mb-1 border-black rounded-[0.5vh] bg-aliceblue" id="chat-box"></textarea>}
+                        {<textarea className="chat-box h-[50vh] w-[70vw] overflow-y-scroll mb-1 border-black rounded-[0.5vh] bg-aliceblue" id="chat-box" value={messagesToString()}>
+                        </textarea>}
                     </Slide>
                 </div>
             </div>

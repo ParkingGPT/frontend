@@ -1,10 +1,10 @@
 export default class ChatHistoryDao {
-    history: Array<Message>;
+    history: Array<ChatMessage>;
     constructor() {
         this.history = [];
     }
 
-    addMessage(message: Message) {
+    addMessage(message: ChatMessage) {
         if (!message || !message.role || !message.content) {
             throw new Error("Message must have 'role' and 'content'.");
         }
@@ -21,7 +21,7 @@ export default class ChatHistoryDao {
     }
 }
 
-interface Message { 
+interface ChatMessage { 
     role: string;
     content: string;
 }
