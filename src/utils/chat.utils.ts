@@ -87,7 +87,7 @@ export const confirmation = async (res: ChatResponse) => {
                     radius: 100
                 }
         });
-        const { construction, events, cogestion, hazards } = inc_res.data;
+        const { construction, events, congestion, hazards } = inc_res.data;
         const post_data = {
             pct: value[i].pct,
             probability: value[i].probability,
@@ -97,7 +97,7 @@ export const confirmation = async (res: ChatResponse) => {
             stars: value[i].stars,
             construction: construction,
             events: events,
-            cogestion: cogestion,
+            congestion: congestion,
             hazards: hazards
         }
         console.log(post_data);
