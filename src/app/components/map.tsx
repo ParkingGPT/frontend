@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { APIProvider, useMap, Map } from '@vis.gl/react-google-maps';
+import { Env } from '@/env';
 
 interface Center {
     lat: number;
@@ -20,7 +21,7 @@ export const MapComponent = ({center: c}: MapProps) => {
     }, [map]);
 
     return <>
-        <APIProvider apiKey={"AIzaSyDA49Yft8RgwmtTYuZuARaFAUTCmwrNg7c"}>
+        <APIProvider apiKey={Env.GOOGLE_API_KEY}>
             <Map
                 zoom={3}
                 center={center}

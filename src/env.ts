@@ -1,5 +1,6 @@
 export namespace Env {
     export const BACKEND_URL = 'http://localhost:5050';
+    export const GOOGLE_API_KEY = "__key__"
     export const INRIX_APP_ID: string = '6lloxl4uc1';
     export const INRIX_APP_KEY: string = 'Nmxsb3hsNHVjMXxiNWR3NUxIeDFWMVhNWTRXRW9BRDQycjI1QlowbUUzZDFJbjREU3Zv';
     export const INIT_PROMPT =
@@ -55,7 +56,9 @@ If the user mentioned more than one destination, generate a non-request response
   "message": "Got it! Searching for surrounding areas..."
 }
 \`\`\`
+    If the actual locations were very close (approximately the same place) between some of the options, you should consider them all as the same one.
     If the user points out that none of the options is correct, you should ask for further information and generate another findPlace request.
+    If there's only one option, you should directly confirm it with the user.
 
 If the user's request is not a request of any kind, or if the request is unclear, your response should be in this JSON format:
 {
@@ -86,7 +89,7 @@ and the user said "I want to go to Shell" in previous conversations, you'll gene
 You can rephrase as you like.
 Your given JSON is:`
     export const RECOMMENDATION_PROMPT =
-`[SYSTEM] You'll be given a list of parking lots, each lot instance has a "prediction" field, which is the final score computed by our smart machine-learning based algorithm. This algorithm takes availability, distance, price, user review, safety and many other factors into account to predict a overall score. You should rank all the lots based on the prediction score, from high to low, and generate a response with the message recommending the highest one to the user. You may refer to some data or our algorithm to support your choice.
+`[SYSTEM] You'll be given a list of parking lots, each has a "prediction" field, which is the recommendation score of each parking lot computed by our smart machine-learning algorithm. This algorithm takes availability, distance, price, user review, safety and many other factors into account to predict a overall score. You should genearet a non-request response with a message that gives the user parking options raned from highest to lowest prediction score, and recommend the one with the highest score to the user. You may refer to the parking lot data or our algorithm to support your choice.
 The list of parking lots is as follows:`
 
 }
