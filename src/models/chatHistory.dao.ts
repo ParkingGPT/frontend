@@ -1,5 +1,5 @@
 export default class ChatHistoryDao {
-    history: Array<ChatMessage>;
+    history: ChatMessage[];
     constructor() {
         this.history = [];
     }
@@ -12,8 +12,18 @@ export default class ChatHistoryDao {
         this.history.push(message);
     }
 
+    addAndClone(message: ChatMessage) { 
+        const clone = new ChatHistoryDao();
+        clone.history = [...this.history, message];
+        return clone;
+    }
+
     getHistory() {
         return this.history;
+    }
+
+    getDisplayHistory() { 
+        return this.history.filter((message) => message.role === 'user' || message.role === 'assistant');
     }
 
     clearHistory() {

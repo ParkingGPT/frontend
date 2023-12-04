@@ -4,50 +4,52 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import SendIcon from '@mui/icons-material/Send';
 import * as chat from '@/utils/chat.utils';
+import ChatHistoryDao from '@/models/chatHistory.dao';
+import { Env } from '@/env';
 
 export const ChatHistory = () => {
     const [expanded, setExpanded] = useState(false);
-    const [messages, setMessages] = useState<string[]>([]);
 
     const [chatText, setChatText] = useState('');
     const [isTyping, setIsTyping] = useState(false);
+
+    const [chatHistory, setChatHistory] = useState<ChatHistoryDao>(new ChatHistoryDao());
 
     const handleInputChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setChatText(event.target.value);
     };
 
-    const messagesToString = () => {
-        if(messages.length === 0) return '';
-        return messages.join('\n');
-    };
+    const historyToString = () => { 
+        return chatHistory.getDisplayHistory().map((message) => { return message.role + ": " + message.content }).join('\n');
+    }
 
     const handleSendClick = () => {
-        messages.push("user: " + chatText)
-        setMessages(messages);
-        if (messages.length === 0) { 
-            chat.initSession("1").then((res) => {
-                    messages.push(res)
-                    setMessages(messages);
-                });
-        }
-        if (chatText.trim()) {
-            setChatText('');
-            setExpanded(true);
-            setIsTyping(true);
-            chat.handleChat("1", chatText).then((res) => {
-                messages.push(res)
-                setMessages(messages);
-                setIsTyping(false);
-            });
-        }
+        if(!chatText.trim()) return;
+        
+        setChatText('');
+        setExpanded(true);
+        setIsTyping(true);
+
+        chatHistory.addMessage({
+            role: 'user',
+            content: chatText
+        })
+        chat.handleChat("1", chatHistory).then((history) => {
+            setChatHistory(history);
+            setIsTyping(false);
+        });
     };
 
-    // useEffect(() => {
-    //     const _ = chat.initSession("1").then((res) => {
-    //         const message = res.message
-    //         setMessages([...messages, res]);
-    //     });
-    // }, [messages]);
+    useEffect(() => {
+        chatHistory.addMessage({
+            role: 'system',
+            content: Env.INIT_PROMPT
+        });
+        chat.handleChat("1", chatHistory).then((history) => {
+            setChatHistory(history);
+            setIsTyping(false);
+        });
+    }, []);
 
     return (
         <>
@@ -66,7 +68,7 @@ export const ChatHistory = () => {
                         }
                     </div>
                     <Slide direction="up" in={expanded} mountOnEnter unmountOnExit>
-                        {<textarea className="chat-box h-[50vh] w-[70vw] overflow-y-scroll mb-1 border-black rounded-[0.5vh] bg-aliceblue" id="chat-box" value={messagesToString()}>
+                        {<textarea className="chat-box h-[50vh] w-[70vw] overflow-y-scroll mb-1 border-black rounded-[0.5vh] bg-aliceblue" id="chat-box" value={historyToString()} readOnly>
                         </textarea>}
                     </Slide>
                 </div>
